@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:3000",
+    baseURL: import.meta.env.VITE_SERVER_URL,
     withCredentials: true,
 });
 
@@ -69,20 +69,40 @@ export const getAllInterviewReports = async () => {
 /**
  * @description Service to generate resume pdf based on user self description, resume content and job description.
  */
-// export const generateResumePdf = async ({ interviewReportId }) => {
-//     try {
-//         const response = await api.post(
-//             `/api/interview/resume/pdf/${interviewReportId}`,
-//             null,
-//             {
-//                 responseType: "blob",
-//             }
-//         );
-//
-//         return response.data;
-//     } catch (error) {
-//         console.error("Error generating resume PDF:", error);
-//
-//         throw error.response?.data || error;
-//     }
-// };
+export const generateResumePdf = async ({ interviewReportId }) => {
+    try {
+        const response = await api.post(
+            `/api/interview/resume/pdf/${interviewReportId}`,
+            null,
+            {
+                responseType: "blob",
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("Failed to generate resume PDF:", error);
+
+        if (error.response?.data instanceof Blob) {
+            try {
+                const errorText = await error.response.data.text();
+                const errorData = JSON.parse(errorText);
+
+                throw new Error(
+                    errorData.message ||
+                        "Failed to generate resume PDF."
+                );
+            } catch {
+                throw new Error(
+                    "Failed to generate resume PDF."
+                );
+            }
+        }
+
+        throw new Error(
+            error.response?.data?.message ||
+                error.message ||
+                "Failed to generate resume PDF."
+        );
+    }
+};

@@ -1,6 +1,7 @@
 import express from "express"
 import { authUserMiddleware } from "../middlewares/auth.middleware.js"
-import { generateInterviewReportController,getInterviewReportById,getAllInterviewReports } from "../controllers/interview.controller.js"
+import { generateInterviewReportController,getInterviewReportById,
+    getAllInterviewReports, generateResumePdfController } from "../controllers/interview.controller.js"
 import { upload } from "../middlewares/file.middleware.js"
 
 const router = express.Router()
@@ -26,6 +27,12 @@ router.get("/report/:interviewId",authUserMiddleware,getInterviewReportById)
  * @description get all interview reports of logged in user
  */
 router.get("/", authUserMiddleware, getAllInterviewReports)
+
+/**
+ * @route GET /api/interview/resume/pdf
+ * @description generate resumepdf
+ */
+router.post("/resume/pdf/:interviewReportId",authUserMiddleware,generateResumePdfController)
 
 
 export default router

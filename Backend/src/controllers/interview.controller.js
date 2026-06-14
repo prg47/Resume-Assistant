@@ -1,5 +1,5 @@
 import { PDFParse } from "pdf-parse"
-import { generateInterviewReport } from "../services/ai.service.js"
+import { generateInterviewReport,generateResumePdf, } from "../services/ai.service.js"
 import interviewReportModel from "../models/interviewReport.model.js"
 
 
@@ -97,6 +97,56 @@ export async function getAllInterviewReports(req, res, next) {
 
         return res.status(500).json({
             message: "Internal server error.",
+        });
+    }
+}
+
+export async function generateResumePdfController(req, res) {
+    try {
+        const { interviewReportId } = req.params;
+
+        const interviewReport = await interviewReportModel.findById(
+            interviewReportId
+        );
+
+        if (!interviewReport) {
+            return res.status(404).json({
+                message: "Interview report not found.",
+            });
+        }
+
+        const {
+            resume,
+            jobDescription,
+            selfDescription,
+        } = interviewReport;
+
+        const pdfBuffer = await generateResumePdf({
+            resume,
+            jobDescription,
+            selfDescription,
+        });
+
+        res.set({
+            "Content-Type": "application/pdf",
+            "Content-Disposition": `attachment; filename=resume_${interviewReportId}.pdf`,
+        });
+
+        return res.send(pdfBuffer);
+    } catch (error) {
+        console.error(
+            "Generate resume PDF controller error:",
+            error
+        );
+
+        return res.status(500).json({
+            message: "Failed to generate resume PDF.",
+            error:
+                process.env.NODE_ENV === "development"
+                    ? error instanceof Error
+                        ? error.message
+                        : String(error)
+                    : undefined,
         });
     }
 }
