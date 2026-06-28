@@ -1,0 +1,82 @@
+$header-bg: #0f1117;
+$header-border: rgba(255, 255, 255, 0.08);
+$text-light: #f4f5f7;
+$text-muted: rgba(244, 245, 247, 0.55);
+$accent: #ff3d71;
+
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 2rem;
+    background: $header-bg;
+    border-bottom: 1px solid $header-border;
+
+    &__brand {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    &__logo {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.5rem;
+        background: $accent;
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+    }
+
+    &__title {
+        font-weight: 600;
+        font-size: 1.05rem;
+        color: $text-light;
+        white-space: nowrap;
+    }
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    &__user {
+        font-size: 0.9rem;
+        color: $text-muted;
+        white-space: nowrap;
+    }
+}
+
+.logout-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid $header-border;
+    background: transparent;
+    color: $text-light;
+    cursor: pointer;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+    &:hover {
+        background: $accent;
+        border-color: $accent;
+        color: #fff;
+    }
+}

@@ -1,0 +1,377 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+$bg-deep: #0b0d12;
+$bg-surface: #141822;
+$bg-surface-alt: #181c27;
+$border: rgba(244, 245, 247, 0.08);
+$text-primary: #f4f5f7;
+$text-muted: rgba(244, 245, 247, 0.62);
+$accent: #ff3d71;
+$accent-soft: rgba(255, 61, 113, 0.12);
+
+$font-display: 'Space Grotesk', sans-serif;
+$font-body: 'Inter', sans-serif;
+$font-mono: 'JetBrains Mono', monospace;
+
+.landing-page {
+    background: $bg-deep;
+    color: $text-primary;
+    font-family: $font-body;
+    min-height: 100vh;
+}
+
+.link-button {
+    background: none;
+    border: none;
+    color: $text-primary;
+    font-family: $font-body;
+    font-size: 0.95rem;
+    cursor: pointer;
+    padding: 0;
+
+    &:hover {
+        color: $accent;
+    }
+
+    &--large {
+        font-size: 1rem;
+        font-weight: 500;
+    }
+}
+
+/* ── Nav ── */
+.landing-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 1.25rem 3rem;
+
+    &__brand {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    &__logo {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.5rem;
+        background: $accent;
+        color: #fff;
+        font-family: $font-display;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: 1.75rem;
+    }
+}
+
+/* ── Hero ── */
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3rem;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 4rem 3rem 6rem;
+    box-sizing: border-box;
+
+    &__copy {
+        flex: 1;
+        max-width: 560px;
+    }
+
+    &__eyebrow {
+        display: inline-block;
+        font-family: $font-mono;
+        font-size: 0.78rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: $accent;
+        background: $accent-soft;
+        padding: 0.35rem 0.75rem;
+        border-radius: 0.4rem;
+        margin-bottom: 1.5rem;
+    }
+
+    &__headline {
+        font-family: $font-display;
+        font-size: 3.2rem;
+        line-height: 1.12;
+        font-weight: 700;
+        margin: 0 0 1.25rem;
+
+        .highlight {
+            color: $accent;
+        }
+    }
+
+    &__subhead {
+        font-size: 1.08rem;
+        line-height: 1.6;
+        color: $text-muted;
+        margin: 0 0 2.25rem;
+    }
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: 1.75rem;
+        flex-wrap: wrap;
+    }
+
+    &__visual {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+    }
+}
+
+/* ── Terminal (signature element) ── */
+.terminal {
+    width: 100%;
+    max-width: 440px;
+    background: $bg-surface;
+    border: 1px solid $border;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 30px 60px -20px rgba(255, 61, 113, 0.12);
+
+    &__bar {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.7rem 1rem;
+        background: $bg-surface-alt;
+        border-bottom: 1px solid $border;
+    }
+
+    &__dot {
+        width: 0.65rem;
+        height: 0.65rem;
+        border-radius: 50%;
+
+        &--red { background: #ff5f57; }
+        &--yellow { background: #febc2e; }
+        &--green { background: #28c840; }
+    }
+
+    &__label {
+        margin-left: 0.5rem;
+        font-family: $font-mono;
+        font-size: 0.75rem;
+        color: $text-muted;
+    }
+
+    &__body {
+        padding: 1.25rem 1.25rem 1.5rem;
+        min-height: 230px;
+        font-family: $font-mono;
+        font-size: 0.85rem;
+        line-height: 1.7;
+    }
+
+    &__line {
+        margin: 0;
+        white-space: pre-wrap;
+
+        &--cmd {
+            color: $text-primary;
+            font-weight: 500;
+        }
+
+        &--out {
+            color: $text-muted;
+        }
+
+        &--highlight {
+            color: $accent;
+            font-weight: 500;
+        }
+    }
+
+    &__cursor {
+        display: inline-block;
+        width: 0.55rem;
+        height: 1rem;
+        background: $accent;
+        vertical-align: middle;
+        animation: blink 1s steps(1) infinite;
+    }
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+/* ── How it works ── */
+.how-it-works {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 2rem 3rem 6rem;
+    box-sizing: border-box;
+
+    &__header {
+        text-align: center;
+        margin-bottom: 3rem;
+
+        h2 {
+            font-family: $font-display;
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 0.75rem 0 0;
+        }
+    }
+}
+
+.section-eyebrow {
+    display: inline-block;
+    font-family: $font-mono;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $accent;
+}
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.step {
+    background: $bg-surface;
+    border: 1px solid $border;
+    border-radius: 0.85rem;
+    padding: 2rem 1.75rem;
+
+    &__number {
+        display: block;
+        font-family: $font-mono;
+        font-size: 0.9rem;
+        color: $accent;
+        margin-bottom: 1rem;
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-size: 1.15rem;
+        font-weight: 600;
+        margin: 0 0 0.6rem;
+    }
+
+    &__description {
+        font-size: 0.95rem;
+        line-height: 1.55;
+        color: $text-muted;
+        margin: 0;
+    }
+}
+
+/* ── CTA Band ── */
+.cta-band {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 2rem 6rem;
+    text-align: center;
+
+    h2 {
+        font-family: $font-display;
+        font-size: 1.9rem;
+        font-weight: 600;
+        margin: 0 0 2rem;
+        line-height: 1.3;
+    }
+}
+
+/* ── Footer ── */
+.landing-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 2rem 3rem 3rem;
+    border-top: 1px solid $border;
+    box-sizing: border-box;
+
+    &__brand {
+        font-family: $font-display;
+        font-weight: 600;
+        color: $text-muted;
+    }
+
+    &__links {
+        display: flex;
+        gap: 1.75rem;
+
+        a {
+            color: $text-muted;
+            font-size: 0.9rem;
+            text-decoration: none;
+
+            &:hover {
+                color: $accent;
+            }
+        }
+    }
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .hero {
+        flex-direction: column;
+        padding: 3rem 1.5rem 4rem;
+        text-align: center;
+
+        &__copy {
+            max-width: 100%;
+        }
+
+        &__actions {
+            justify-content: center;
+        }
+    }
+
+    .landing-nav {
+        padding: 1.25rem 1.5rem;
+    }
+
+    .steps {
+        grid-template-columns: 1fr;
+    }
+
+    .how-it-works,
+    .landing-footer {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+
+    .landing-footer {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .terminal__cursor {
+        animation: none;
+    }
+}
