@@ -14,7 +14,7 @@ const Header = ({ title }) => {
 
     return (
         <header className='app-header'>
-            <div className='app-header__brand' onClick={() => navigate('/')}>
+            <div className='app-header__brand' onClick={() => navigate('/app')}>
                 <span className='app-header__logo'>IP</span>
                 <span className='app-header__title'>{title || 'Interview Prep'}</span>
             </div>

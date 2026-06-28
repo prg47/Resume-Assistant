@@ -65,7 +65,7 @@ const Interview = () => {
 
     const handleOverlayClick = (e) => {
         if (e.target === e.currentTarget) {
-            navigate('/')
+            navigate('/app')
         }
     }
 
