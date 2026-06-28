@@ -40,7 +40,14 @@ import jwt from "jsonwebtoken"
         {expiresIn : "3d"}
     )
 
-    res.cookie("token",token)
+    const isProduction = process.env.NODE_ENV === "production";
+
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "None" : "Lax",
+        maxAge: 3 * 24 * 60 * 60 * 1000
+    });
 
     res.status(201).json({
         message : "User registered successfully",
@@ -82,7 +89,15 @@ export async function loginUserController(req,res){
         {expiresIn : "3d"}
     )
 
-    res.cookie("token",token)
+    const isProduction = process.env.NODE_ENV === "production";
+
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "None" : "Lax",
+        maxAge: 3 * 24 * 60 * 60 * 1000
+    });
+
     res.status(200).json({
         message : "User logged In successfully",
         user : {
@@ -97,13 +112,18 @@ export async function loginUserController(req,res){
  * @description logout
  */
 export async function logoutUserController(req,res) {
+    const isProduction = process.env.NODE_ENV === "production";
     const token = req.cookies.token
 
     if(token){
         await tokenBlacklistModel.create({token})
     }
 
-    res.clearCookie("token")
+    res.clearCookie("token", {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "None" : "Lax",
+});
     res.status(200).json({
         message : "User logged out successfully"
     })
