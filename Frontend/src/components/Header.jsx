@@ -9,7 +9,7 @@ const Header = ({ title }) => {
 
     const handleLogoutClick = async () => {
         await handleLogout()
-        navigate('/login')
+        navigate('/')
     }
 
     return (
