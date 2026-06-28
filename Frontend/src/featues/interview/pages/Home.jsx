@@ -8,14 +8,53 @@ const Home = () => {
     const { loading, generateReport,reports } = useInterview()
     const [ jobDescription, setJobDescription ] = useState("")
      const [ selfDescription, setSelfDescription ] = useState("")
+    const [ resumeFileName, setResumeFileName ] = useState("")
+    const [ errorMessage, setErrorMessage ] = useState("")
     const resumeInputRef = useRef()
 
     const navigate = useNavigate()
 
+    const MAX_RESUME_SIZE = 5 * 1024 * 1024 // 5MB
+
+    const handleResumeChange = (e) => {
+        const file = e.target.files[ 0 ]
+
+        if (!file) {
+            setResumeFileName("")
+            return
+        }
+
+        if (file.size > MAX_RESUME_SIZE) {
+            setErrorMessage("Resume file is too large. Max size is 5MB.")
+            e.target.value = ""
+            setResumeFileName("")
+            return
+        }
+
+        setErrorMessage("")
+        setResumeFileName(file.name)
+    }
+
     const handleGenerateReport = async () => {
         const resumeFile = resumeInputRef.current.files[ 0 ]
-        const data = await generateReport({ jobDescription, selfDescription, resumeFile })
-        navigate(`/interview/${data._id}`)
+
+        if (!resumeFile && !selfDescription.trim()) {
+            setErrorMessage("Please upload a resume or provide a self-description.")
+            return
+        }
+
+        if (!jobDescription.trim()) {
+            setErrorMessage("Please provide the job description.")
+            return
+        }
+
+        try {
+            setErrorMessage("")
+            const data = await generateReport({ jobDescription, selfDescription, resumeFile })
+            navigate(`/interview/${data._id}`)
+        } catch (err) {
+            setErrorMessage(err?.response?.data?.message || "Something went wrong while generating your report. Please try again.")
+        }
     }
 
     if (loading) {
@@ -34,6 +73,13 @@ const Home = () => {
                 <h1>Create Your Custom <span className='highlight'>Interview Plan</span></h1>
                 <p>Let our AI analyze the job requirements and your unique profile to build a winning strategy.</p>
             </header>
+
+            {/* Error Banner */}
+            {errorMessage && (
+                <div className='error-banner' role='alert'>
+                    {errorMessage}
+                </div>
+            )}
 
             {/* Main Card */}
             <div className='interview-card'>
@@ -54,7 +100,7 @@ const Home = () => {
                             placeholder={`Paste the full job description here...\ne.g. 'Senior Frontend Engineer at Google requires proficiency in React, TypeScript, and large-scale system design...'`}
                             maxLength={5000}
                         />
-                        <div className='char-counter'>0 / 5000 chars</div>
+                        <div className='char-counter'>{jobDescription.length} / 5000 chars</div>
                     </div>
 
                     {/* Vertical Divider */}
@@ -79,9 +125,26 @@ const Home = () => {
                                 <span className='dropzone__icon'>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 16 12 12 8 16" /><line x1="12" y1="12" x2="12" y2="21" /><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" /></svg>
                                 </span>
-                                <p className='dropzone__title'>Click to upload or drag &amp; drop</p>
-                                <p className='dropzone__subtitle'>PDF or DOCX (Max 5MB)</p>
-                                <input ref={resumeInputRef} hidden type='file' id='resume' name='resume' accept='.pdf,.docx' />
+                                {resumeFileName ? (
+                                    <>
+                                        <p className='dropzone__title'>{resumeFileName}</p>
+                                        <p className='dropzone__subtitle'>File selected &#10003; Click to change</p>
+                                    </>
+                                ) : (
+                                    <>
+                                        <p className='dropzone__title'>Click to upload or drag &amp; drop</p>
+                                        <p className='dropzone__subtitle'>PDF or DOCX (Max 5MB)</p>
+                                    </>
+                                )}
+                                <input
+                                    ref={resumeInputRef}
+                                    hidden
+                                    type='file'
+                                    id='resume'
+                                    name='resume'
+                                    accept='.pdf,.docx'
+                                    onChange={handleResumeChange}
+                                />
                             </label>
                         </div>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import '../style/interview.scss'
 import { useInterview } from '../hooks/useInterview.js'
 import { useNavigate, useParams } from 'react-router'
@@ -59,21 +59,42 @@ const RoadMapDay = ({ day }) => (
 // ── Main Component ────────────────────────────────────────────────────────────
 const Interview = () => {
     const [ activeNav, setActiveNav ] = useState('technical')
-    const { report, getReportById, loading,getResumePdf  } = useInterview()
+    const { report, loading, error, getResumePdf } = useInterview()
     const { interviewId } = useParams()
+    const navigate = useNavigate()
 
-    useEffect(() => {
-        if (interviewId) {
-            getReportById(interviewId)
+    const handleOverlayClick = (e) => {
+        if (e.target === e.currentTarget) {
+            navigate('/')
         }
-    }, [ interviewId ])
+    }
 
-
-
-    if (loading || !report) {
+    if (loading) {
         return (
             <main className='loading-screen'>
                 <h1>Loading your interview plan...</h1>
+            </main>
+        )
+    }
+
+    if (error) {
+        return (
+            <main className='loading-screen' onClick={handleOverlayClick}>
+                <h1>{error}</h1>
+                <button className='button primary-button' onClick={() => navigate('/')}>
+                    Back to Home
+                </button>
+            </main>
+        )
+    }
+
+    if (!report) {
+        return (
+            <main className='loading-screen' onClick={handleOverlayClick}>
+                <h1>This interview plan could not be found.</h1>
+                <button className='button primary-button' onClick={() => navigate('/')}>
+                    Back to Home
+                </button>
             </main>
         )
     }
@@ -84,8 +105,8 @@ const Interview = () => {
 
 
     return (
-        <div className='interview-page'>
-            <div className='interview-layout'>
+        <div className='interview-page' onClick={handleOverlayClick}>
+            <div className='interview-layout' onClick={(e) => e.stopPropagation()}>
 
                 {/* ── Left Nav ── */}
                 <nav className='interview-nav'>

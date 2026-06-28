@@ -1,6 +1,5 @@
 import {GoogleGenAI} from "@google/genai"
 import {z} from "zod"
-import {zodToJsonSchema} from "zod-to-json-schema"
 import puppeteer from "puppeteer"
 
 
@@ -47,20 +46,48 @@ export async function generateInterviewReport({ resume, selfDescription, jobDesc
 - Include ALL fields specified in the schema.
 - The "title" field MUST contain the job title extracted from the job description (for example: "MERN Stack Developer", "Frontend Engineer", etc.)
 - MUST generate the technical questions , behaviral questions and skill gap as per schema
+- Each item in "technicalQuestions" and "behavioralQuestions" MUST be an object with "question", "intention", and "answer" fields — never a plain string.
 `
 
-    const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: prompt,
-        config: {
-            responseMimeType: "application/json",
-            responseSchema: zodToJsonSchema(interviewReportSchema),
+    const jsonSchema = z.toJSONSchema(interviewReportSchema)
+
+    const callGemini = async () => {
+        const response = await ai.models.generateContent({
+            model: "gemini-3.1-flash-lite",
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: jsonSchema,
+                maxOutputTokens: 8192,
+                thinkingConfig: { thinkingLevel: "low" },
+            }
+        })
+
+        let parsed
+        try {
+            parsed = JSON.parse(response.text)
+        } catch (error) {
+            console.error("Invalid JSON returned by Gemini for interview report:", response.text)
+            throw new Error("AI returned an invalid response format.")
         }
-    })
 
-    return JSON.parse(response.text)
+        return interviewReportSchema.safeParse(parsed)
+    }
 
+    let validationResult = await callGemini()
 
+    if (!validationResult.success) {
+        console.error("Interview report schema validation failed (attempt 1):", validationResult.error)
+        // Retry once — structured output occasionally comes back malformed/truncated.
+        validationResult = await callGemini()
+    }
+
+    if (!validationResult.success) {
+        console.error("Interview report schema validation failed (attempt 2):", validationResult.error)
+        throw new Error("Generated interview report failed validation.")
+    }
+
+    return validationResult.data
 }
 
 export async function generateResumePdf({
@@ -99,7 +126,7 @@ export async function generateResumePdf({
                 contents: prompt,
                 config: {
                     responseMimeType: "application/json",
-                    responseSchema: zodToJsonSchema(resumePdfSchema),
+                    responseSchema: z.toJSONSchema(resumePdfSchema),
                 },
             });
         } catch (error) {
@@ -201,4 +228,3 @@ export async function generatePdfFromHtml(htmlContent) {
         }
     }
 }
-
